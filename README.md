@@ -37,6 +37,16 @@ Go to **AI & ML** → **Agents** → Create Agent. Use the following configurati
 
 ---
 
+## 🔄 Development Workflow (Automated vs. Manual)
+
+| Component | Status | How to Update |
+|-----------|--------|---------------|
+| **Semantic Model** | ✅ **Automated** | Edit `config/semantic.yaml` → Run `python scripts/deploy_semantic_model.py`. This updates the object in Snowflake automatically. |
+| **Agent Instructions** | ✋ **Manual** | **Cannot be automated via IDE**. Best Practice is to edit the `.md` files in `config/agents/` to track changes in Git, then **Copy-Paste** the content into the Snowsight UI. |
+| **Tool Descriptions** | ✋ **Manual** | Similar to instructions, these must be pasted into the Tool settings in Snowsight. |
+
+---
+
 ## 📂 Project Structure
 
 ```text
