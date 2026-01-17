@@ -1,0 +1,481 @@
+# Enhanced Semantic Model with Cortex Search Integration
+# ======================================================
+# This version integrates Cortex Search for dynamic literal retrieval,
+# improving natural language query accuracy for product names and filtering.
+#
+# KEY DIFFERENCE from semantic.yaml:
+# - ARTICLE_NAME dimension uses cortex_search_service instead of sample_values
+# - This allows the agent to find exact product names even with fuzzy queries
+#
+# SETUP REQUIRED:
+# 1. Replace "USER01" with your actual schema name
+# 2. Ensure ARTICLE_NAME_SEARCH Cortex Search service is created
+
+name: semantic_search
+description: >
+  Enhanced data model with Cortex Search integration for improved literal retrieval.
+  This model consists of three core tables: DIM_ARTICLE (product information), 
+  DIM_CUSTOMER (customer profiles), and FACT_SALES (transaction records).
+  The ARTICLE_NAME dimension is enhanced with Cortex Search for better product name matching.
+
+tables:
+  - name: DIM_ARTICLE
+    base_table:
+      database: SNOWCAMP_DB
+      schema: USER01  # Replace USER01 with your actual schema name
+      table: DIM_ARTICLE
+    dimensions:
+      - name: ARTICLE_NAME
+        expr: ARTICLE_NAME
+        description: >
+          The name of the article or product being sold.
+          This dimension is enhanced with Cortex Search for fuzzy matching.
+        synonyms:
+          - product_name
+          - item_name
+          - article_title
+          - product_title
+          - item_description
+          - product_description
+        data_type: VARCHAR(16777216)
+        # CORTEX SEARCH INTEGRATION
+        # Instead of sample_values, we use a search service for dynamic retrieval
+        cortex_search_service:
+          database: SNOWCAMP_DB
+          schema: USER01  # Replace USER01 with your actual schema name
+          service: ARTICLE_NAME_SEARCH
+          literal_column: ARTICLE_NAME
+      - name: ARTICLE_CATEGORY
+        expr: ARTICLE_CATEGORY
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - Bike
+          - Ski Boots
+          - Skis
+        description: >
+          The category of the article (Bike, Ski Boots, or Skis),
+          representing the type of product being sold.
+        synonyms:
+          - article_type
+          - product_category
+          - item_group
+          - classification
+          - genre
+          - category_name
+          - product_class
+          - article_grouping
+      - name: ARTICLE_BRAND
+        expr: ARTICLE_BRAND
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - Mondracer
+          - Veloci
+          - TDBootz
+          - Graviton
+          - Xtreme
+          - Carver
+          - Outpiste
+          - RacerX
+        description: The brand name of the article, representing the manufacturer.
+        synonyms:
+          - brand_name
+          - article_maker
+          - manufacturer
+          - product_brand
+          - item_brand
+          - article_label
+      - name: ARTICLE_COLOR
+        expr: ARTICLE_COLOR
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - Red
+          - Blue
+          - Black
+          - Green
+          - White
+          - Orange
+          - Yellow
+        description: The color of the article.
+        synonyms:
+          - color
+          - hue
+          - shade
+          - tint
+          - article_hue
+          - product_color
+          - item_color
+          - article_shade
+    facts:
+      - name: ARTICLE_ID
+        expr: ARTICLE_ID
+        data_type: NUMBER(38,0)
+        sample_values:
+          - '1'
+          - '2'
+          - '3'
+        description: Unique identifier for an article in the inventory.
+        synonyms:
+          - article_key
+          - product_id
+          - item_number
+          - product_code
+          - article_reference
+          - item_id
+      - name: ARTICLE_PRICE
+        expr: ARTICLE_PRICE
+        data_type: FLOAT
+        sample_values:
+          - '3000'
+          - '9000'
+          - '10000'
+        description: The price of an article in dollars.
+        synonyms:
+          - item_cost
+          - unit_price
+          - article_value
+          - product_price
+          - sale_price
+          - list_price
+          - retail_price
+    primary_key:
+      columns:
+        - ARTICLE_ID
+
+  - name: DIM_CUSTOMER
+    base_table:
+      database: SNOWCAMP_DB
+      schema: USER01  # Replace USER01 with your actual schema name
+      table: DIM_CUSTOMER
+    dimensions:
+      - name: CUSTOMER_NAME
+        expr: CUSTOMER_NAME
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - Customer 0
+          - Customer 1
+          - Customer 2
+        description: The name of the customer.
+        synonyms:
+          - customer_title
+          - client_name
+          - account_holder
+          - patron_name
+          - buyer_name
+          - client_title
+          - account_name
+      - name: CUSTOMER_REGION
+        expr: CUSTOMER_REGION
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - North
+          - South
+          - East
+          - West
+          - Central
+        description: Geographic region where the customer is located.
+        synonyms:
+          - geographic_area
+          - customer_location
+          - region_code
+          - area_code
+          - territory
+          - customer_territory
+          - sales_region
+          - market_area
+      - name: CUSTOMER_GENDER
+        expr: CUSTOMER_GENDER
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - Male
+          - Female
+        description: The gender of the customer.
+        synonyms:
+          - sex
+          - gender_type
+          - customer_sex
+          - gender_category
+          - demographic_gender
+      - name: CUSTOMER_SEGMENT
+        expr: CUSTOMER_SEGMENT
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - Premium
+          - Regular
+          - Occasional
+        description: >
+          Customer segment based on purchase behavior: Premium (high-value),
+          Regular (consistent), or Occasional (infrequent).
+        synonyms:
+          - customer_category
+          - customer_type
+          - customer_group
+          - client_segment
+          - patron_category
+          - demographic_segment
+          - market_segment
+    facts:
+      - name: CUSTOMER_ID
+        expr: CUSTOMER_ID
+        data_type: NUMBER(38,0)
+        sample_values:
+          - '0'
+          - '1'
+          - '2'
+        description: Unique identifier for each customer.
+        synonyms:
+          - customer_key
+          - client_id
+          - account_number
+          - user_id
+          - patron_id
+          - subscriber_id
+          - client_identifier
+      - name: CUSTOMER_AGE
+        expr: CUSTOMER_AGE
+        data_type: NUMBER(38,0)
+        sample_values:
+          - '38'
+          - '23'
+          - '24'
+        description: The age of the customer in years.
+        synonyms:
+          - age_of_customer
+          - customer_birth_year
+          - customer_dob
+          - customer_maturity
+          - years_old
+    primary_key:
+      columns:
+        - CUSTOMER_ID
+
+  - name: FACT_SALES
+    base_table:
+      database: SNOWCAMP_DB
+      schema: USER01  # Replace USER01 with your actual schema name
+      table: FACT_SALES
+    dimensions:
+      - name: SALES_CHANNEL
+        expr: SALES_CHANNEL
+        data_type: VARCHAR(16777216)
+        sample_values:
+          - Online
+          - In-Store
+          - Partner
+        description: >
+          The sales channel: Online, In-Store, or Partner.
+        synonyms:
+          - sales_medium
+          - distribution_channel
+          - point_of_sale
+          - sales_medium_type
+          - sales_outlet
+          - sales_route
+          - sales_source
+      - name: PROMOTION_APPLIED
+        expr: PROMOTION_APPLIED
+        data_type: BOOLEAN
+        sample_values:
+          - 'TRUE'
+          - 'FALSE'
+        description: Whether a promotion was applied to the sale.
+        synonyms:
+          - discount_used
+          - sale_applied
+          - promo_used
+          - offer_applied
+          - special_offer
+          - sale_flag
+          - promotion_used
+          - discount_flag
+    time_dimensions:
+      - name: DATE_SALES
+        expr: DATE_SALES
+        data_type: DATE
+        sample_values:
+          - '2022-04-16'
+          - '2022-04-17'
+          - '2022-04-18'
+        description: Date of the sales transaction.
+        synonyms:
+          - SALES_DATE
+          - TRANSACTION_DATE
+          - PURCHASE_DATE
+          - ORDER_DATE
+          - SALE_TIMESTAMP
+    facts:
+      - name: SALE_ID
+        expr: SALE_ID
+        data_type: NUMBER(38,0)
+        sample_values:
+          - '0'
+          - '1'
+          - '2'
+        description: Unique identifier for each sales transaction.
+        synonyms:
+          - sale_number
+          - transaction_id
+          - order_id
+          - invoice_number
+          - purchase_id
+          - sales_transaction
+          - sale_reference
+          - transaction_reference
+      - name: ARTICLE_ID
+        expr: ARTICLE_ID
+        data_type: NUMBER(38,0)
+        sample_values:
+          - '5'
+          - '4'
+          - '7'
+        description: Reference to the article being sold.
+        synonyms:
+          - product_id
+          - item_id
+          - product_number
+          - item_number
+          - article_number
+          - product_code
+          - item_code
+      - name: CUSTOMER_ID
+        expr: CUSTOMER_ID
+        data_type: NUMBER(38,0)
+        sample_values:
+          - '3678'
+          - '3031'
+          - '1927'
+        description: Reference to the customer who made the purchase.
+        synonyms:
+          - client_id
+          - customer_number
+          - account_id
+          - client_number
+          - buyer_id
+          - patron_id
+          - user_id
+      - name: QUANTITY_SOLD
+        expr: QUANTITY_SOLD
+        data_type: NUMBER(38,0)
+        sample_values:
+          - '9'
+          - '2'
+          - '10'
+        description: Number of units sold in the transaction.
+        synonyms:
+          - units_sold
+          - items_sold
+          - quantity_purchased
+          - amount_sold
+          - sales_volume
+          - sold_quantity
+          - number_sold
+      - name: TOTAL_PRICE
+        expr: TOTAL_PRICE
+        data_type: FLOAT
+        sample_values:
+          - '76500'
+          - '100000'
+          - '10000'
+        description: Total price of the transaction in dollars.
+        synonyms:
+          - total_cost
+          - total_amount
+          - sale_amount
+          - total_sale_value
+          - total_revenue
+          - total_invoice_value
+          - total_transaction_value
+    primary_key:
+      columns:
+        - CUSTOMER_ID
+        - ARTICLE_ID
+
+relationships:
+  - name: customer_join
+    join_type: inner
+    relationship_type: many_to_one
+    left_table: FACT_SALES
+    relationship_columns:
+      - left_column: CUSTOMER_ID
+        right_column: CUSTOMER_ID
+    right_table: DIM_CUSTOMER
+  - name: article_join
+    join_type: inner
+    relationship_type: many_to_one
+    left_table: FACT_SALES
+    relationship_columns:
+      - left_column: ARTICLE_ID
+        right_column: ARTICLE_ID
+    right_table: DIM_ARTICLE
+
+verified_queries:
+  - name: Monthly sales by category
+    question: Show me monthly sales revenue trends by product category over the past 2 years.
+    sql: |-
+      SELECT
+        DATE_TRUNC('MONTH', fs.date_sales) AS month,
+        da.article_category,
+        SUM(fs.total_price) AS monthly_revenue
+      FROM
+        fact_sales AS fs
+        INNER JOIN dim_article AS da ON fs.article_id = da.article_id
+      WHERE
+        fs.date_sales >= DATE_TRUNC('YEAR', CURRENT_DATE - INTERVAL '2 YEARS')
+      GROUP BY
+        DATE_TRUNC('MONTH', fs.date_sales),
+        da.article_category
+      ORDER BY
+        month DESC NULLS LAST,
+        da.article_category
+    use_as_onboarding_question: true
+    verified_by: Lab Instructor
+    verified_at: 1755721720
+
+  - name: Carver sales query
+    question: What are the total sales for the carver skis?
+    sql: |-
+      SELECT
+        da.article_name,
+        COUNT(*) AS total_transactions,
+        SUM(fs.quantity_sold) AS total_units_sold,
+        SUM(fs.total_price) AS total_revenue
+      FROM
+        fact_sales AS fs
+        INNER JOIN dim_article AS da ON fs.article_id = da.article_id
+      WHERE
+        LOWER(da.article_name) LIKE '%carver%'
+      GROUP BY
+        da.article_name
+    use_as_onboarding_question: false
+    verified_by: Lab Instructor
+    verified_at: 1755721720
+
+  - name: Regional sales analysis
+    question: How many carvers are we selling per year in the North region?
+    sql: |-
+      SELECT
+        YEAR(fs.date_sales) AS year,
+        da.article_name,
+        dc.customer_region,
+        SUM(fs.quantity_sold) AS total_units_sold
+      FROM
+        fact_sales AS fs
+        INNER JOIN dim_article AS da ON fs.article_id = da.article_id
+        INNER JOIN dim_customer AS dc ON fs.customer_id = dc.customer_id
+      WHERE
+        LOWER(da.article_name) LIKE '%carver%'
+        AND dc.customer_region = 'North'
+      GROUP BY
+        YEAR(fs.date_sales),
+        da.article_name,
+        dc.customer_region
+      ORDER BY
+        year DESC
+    use_as_onboarding_question: false
+    verified_by: Lab Instructor
+    verified_at: 1755721720
+
+custom_instructions: >
+  Answer sales-related questions about products, customers, and transactions.
+  Use the Cortex Search integration for ARTICLE_NAME to find exact product matches
+  even when users provide approximate names (e.g., "carvers" → "Carver Skis").
+  Do not answer questions about product specifications or usage details.
