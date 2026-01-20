@@ -1,4 +1,4 @@
-# 📊 Cortex Analyst Tool Configuration
+#  Cortex Analyst Tool Configuration
 
 > **Purpose**: Configuration and description templates for the Direct Marketing Analytics tool.
 
@@ -6,7 +6,7 @@
 
 ## Tool Setup in Snowsight
 
-**Location**: AI&ML → Agents > [SFMC_EMAIL_ANALYTICS_AGENT] → Edit → Tools → Add Cortex Analyst
+**Location**: AI&ML  Agents > [SFMC_EMAIL_ANALYTICS_AGENT]  Edit  Tools  Add Cortex Analyst
 
 | Setting | Value |
 |---------|-------|

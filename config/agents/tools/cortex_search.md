@@ -1,4 +1,4 @@
-# 🔍 Cortex Search Tool Configuration
+#  Cortex Search Tool Configuration
 
 > **Purpose**: Template for searching unstructured marketing assets (Guidelines, Briefs, Strategy).
 
@@ -6,14 +6,14 @@
 
 ## Tool Setup in Snowsight
 
-**Location**: AI&ML → Agents → [SFMC_EMAIL_ANALYTICS_AGENT] → Edit → Tools → Add Cortex Search Services
+**Location**: AI&ML  Agents  [SFMC_EMAIL_ANALYTICS_AGENT]  Edit  Tools  Add Cortex Search Services
 
 | Setting | Value |
 |---------|-------|
-| Cortex Search Service | `DEV_MARCOM_DB.APP_DIRECTMARKETING.MARKETING_DOCS_SEARCH` |
-| ID Column | `CHUNK_ID` |
-| Title Column | `DOCUMENT_NAME` |
-| Name | `Marketing_Knowledge_Base` |
+| Cortex Search Service | `DEV_MARCOM_DB.APP_DIRECTMARKETING.CORTEX_SFMC_BENCHMARK_SEARCH` |
+| ID Column | `BENCHMARK_ID` |
+| Title Column | `METRIC_NAME` |
+| Name | `Benchmark_Intelligence_Base` |
 
 ---
 
@@ -22,25 +22,31 @@
 Copy this into the **Description** field:
 
 ```text
-Searches through marketing strategy documents, campaign guidelines, brand standards, and program briefs for SFMC email marketing.
+Searches through industry benchmarks, performance standards, and campaign threshold guidelines for SFMC email marketing.
 
 **Use this tool when the user asks about:**
-- Brand guidelines (voice, tone, logo usage)
-- Campaign strategy or program definitions
-- Best practices for email design and CTAs
-- Historical campaign reports (PDF/DOCX)
-- Legal requirements or compliance for specific markets
+- Industry benchmark standards (vitals for retail/automotive)
+- Expected performance for specific email types (Newsletter, eDM, Triggered)
+- Metric definitions and benchmark thresholds (Excellent, Strong, Good, Warning, Critical)
+- Success criteria and action requirements for email campaigns
+- Market-specific or industry-specific performance standards
 
-**Available content includes:**
-- Marketing Program Playbooks
-- Brand Identity Guidelines
-- Regulatory compliance documents per market
-- PDF summaries of industry benchmarks
+**Searchable Content:**
+- SEARCH_CONTENT: Contains the textual description of the benchmark and thresholds.
+
+**Available Attributes & Columns:**
+- METRIC_NAME: Open Rate, Click Rate, CTOR, etc.
+- EMAIL_TYPE: Newsletter, Promotional, Automated, etc.
+- STATUS: Performance level (Excellent to Critical)
+- INDUSTRY: Automotive, Retail, etc.
+- YEAR_PERIOD: 2024, 2025.
+- MIN_VALUE / MAX_VALUE: Numeric thresholds for the status.
+- STATUS_LABEL: Human-readable status name.
+- ACTION_REQUIRED: Recommended action for that performance level.
 
 **Do NOT use this tool for:**
-- Querying live performance numbers or KPIs (use Direct_Marketing_Analytics)
-- Calculating YTD/YoY trends
-- Comparing sends or opens across markets
+- Querying YOUR live performance numbers or KPIs (use Email_Performance_Analytics)
+- Calculating YTD/YoY trends for your internal data
 ```
 
 ---
