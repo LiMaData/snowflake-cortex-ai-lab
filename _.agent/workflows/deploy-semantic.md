@@ -18,3 +18,12 @@ This workflow automates the deployment of your Semantic Model using a robust Pyt
    ```powershell
    python scripts/deploy_semantic_model.py
    ```
+
+## 🏁 Post-Deployment Verification
+
+After deployment, test the PROD agent as follows:
+1. Open [Snowflake AI Enterprise](https://ai.snowflake.com/volvocars/enterprise/#/homepage)
+2. Switch Role to: `CLD-SNOWFLAKE-PROD-MARCOM-APP-DIRECTMARKETING-ANALYST-SG`
+3. Select Warehouse: `PROD_MARCOM_APP_DIRECTMARKETING_ANALYST_WHS`
+4. Use **"Direct Marketing Analytics PROD Agent"** with **'Direct_Marketing_Analytics_PROD'** source.
+

@@ -10,7 +10,7 @@
 | Role | Access Level | Description |
 |------|--------------|-------------|
 | `CLD-SNOWFLAKE-PROD-MARCOM-APP-DIRECTMARKETING-ETL-SG` | **Ownership / Full Access** | AI Developers and Data Engineers. Can develop, edit, and manage the PROD semantic view in Cortex Analyst. |
-| `CLD-SNOWFLAKE-PROD-MARCOM-APP-DIRECTMARKETING-ANALYST-SG` | **Usage Only** | Business Stakeholders. Can edit agent system prompt and use the agent to ask questions. |
+| `CLD-SNOWFLAKE-PROD-MARCOM-APP-DIRECTMARKETING-ANALYST-SG` | **Usage Only** | AI Developers + Business Stakeholders. Can edit agent system prompt, use the agent to ask questions. |
 
 ### DEV Environment
 | Role | Access Level | Description |
@@ -49,3 +49,18 @@ GRANT MONITOR ON AGENT DEV_MARCOM_DB.APP_DIRECTMARKETING.SFMC_EMAIL_ANALYTICS_AG
 -- GRANT OWNERSHIP ON AGENT PROD_MARCOM_DB.APP_DIRECTMARKETING.SFMC_EMAIL_ANALYTICS_AGENT TO ROLE "CLD-SNOWFLAKE-PROD-MARCOM-APP-DIRECTMARKETING-ETL-SG";
 -- GRANT USAGE ON AGENT PROD_MARCOM_DB.APP_DIRECTMARKETING.SFMC_EMAIL_ANALYTICS_AGENT TO ROLE "CLD-SNOWFLAKE-PROD-MARCOM-APP-DIRECTMARKETING-ANALYST-SG";
 ```
+
+---
+
+## 🧪 PROD Agent Testing Procedure
+
+Once you have been assigned the appropriate role, please follow these steps to test the new PROD agent:
+
+| Step | Action |
+| :--- | :--- |
+| **1** | Open: [Snowflake AI Enterprise](https://ai.snowflake.com/volvocars/enterprise/#/homepage) |
+| **2** | Click the **User Icon** (bottom left) |
+| **3** | Set role to: `CLD-SNOWFLAKE-PROD-MARCOM-APP-DIRECTMARKETING-ANALYST-SG` |
+| **4** | Set warehouse to: `PROD_MARCOM_APP_DIRECTMARKETING_ANALYST_WHS` |
+| **5** | Look for **"Direct Marketing Analytics PROD Agent"** in the chat, and select **'Direct_Marketing_Analytics_PROD'** as the source |
+
