@@ -803,13 +803,31 @@ tables:
           - VCFI_CPROG_OTD_Redesign_Accessories_EDM2_V3_SEFI
       - name: EMAIL_NAME_CLEANSED
         synonyms:
+          - campaign name
           - clean name
           - cleansed name
+          - email name
           - normalized name
+          - send name
+          - short name
+          - specific campaign
           - standardized name
         description: |
-          The email name that has been modified for consistency or analysis purposes.
-          Cleaner version of EMAIL_NAME for grouping and reporting.
+          SHORT/CLEANED version of email name for DISPLAY purposes.
+          Use this column to DISPLAY results to users (cleaner, more readable).
+          
+          COLUMN ROLES:
+          - EMAIL_NAME_CLEANSED (this column): Use for DISPLAY (short, readable)
+          - EMAIL_NAME: Use for FILTERING (full, more accurate matching)
+          
+          EXAMPLE WORKFLOW:
+          1. User asks: "Show me EX30 campaigns"
+          2. Query: SELECT DISTINCT email_name_cleansed, email_name FROM ... WHERE email_name ILIKE '%EX30%'
+          3. Display: Show email_name_cleansed (short) to user
+          4. Offer: "Would you like to see full names for more detail?"
+          5. Filter: Use email_name (full) for the actual query
+          
+          NOTE: This is different from the "campaign" filter which filters by CATEGORY (program_or_compaign = 'Campaign')
         expr: EMAIL_NAME_CLEANSED
         data_type: VARCHAR(16777216)
         sample_values:
@@ -1002,15 +1020,26 @@ tables:
     filters:
       - name: campaign
         synonyms:
+          - campaign
+          - campaigns
           - campaign emails
+          - campaign performance
           - direct mail campaigns
+          - edm campaign
           - edm campaigns
           - edm emails
-          - eedm campaign
           - global campaign
           - global campaigns
-          - global campaigns
-        description: 'Use on campaign metadata to include only programs based on category is ''Campaign''. Campaigns: fixed sends based on business objectives (ex. new model launch) '
+          - marketing campaign
+          - marketing campaigns
+          - promotional campaign
+          - promotional campaigns
+          - show campaigns
+        description: |
+          Use to filter for CAMPAIGN category only (excludes Programs and E-newsletters).
+          Campaigns: Fixed sends based on business objectives (ex. new model launch, seasonal promotion).
+          CRITICAL: When user says "campaign" as a category (not a specific name), apply this filter.
+          Examples: "show me campaign performance", "global campaigns", "eDM campaigns"
         expr: program_or_compaign = 'Campaign'
       - name: catalyst_emails
         synonyms:
