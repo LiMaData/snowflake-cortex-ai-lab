@@ -4178,6 +4178,173 @@ verified_queries:
     use_as_onboarding_question: false
     verified_by: Li Ma
     verified_at: 1769444676
+  - name: 'Show me Link Tracking Alias hierarchy: Market → Email Name → LTA with unique block clicks'
+    question: Show me Link Tracking Alias by Market , Email Name and LTA with unique block clicks
+    sql: |-
+      SELECT
+        c.country_name AS market,
+        m.email_name_cleansed,
+        a.linktrackingalias AS link_tracking_alias,
+        SUM(b.unique_block_clicks) AS total_unique_block_clicks
+      FROM
+        v_fact_sfmc_performance_block AS b
+        LEFT JOIN v_dim_sfmc_alias AS a ON b.alias = a.alias
+        LEFT JOIN v_dim_sfmc_metadata_job AS m ON b.comp_key = m.comp_key
+        LEFT JOIN v_dim_country AS c ON b.business_unit = c.vc_country_code
+      WHERE
+        (
+          NOT m.email_name ILIKE '%sparkpost%'
+          OR m.email_name IS NULL
+        )
+        AND NOT a.linktrackingalias IS NULL
+      GROUP BY
+        c.country_name,
+        m.email_name_cleansed,
+        a.linktrackingalias
+      ORDER BY
+        total_unique_block_clicks DESC
+    use_as_onboarding_question: false
+    verified_by: Li Ma
+    verified_at: 1769445386
+  - name: Show me unique block clicks by country
+    question: Show me unique block clicks by country
+    sql: |-
+      SELECT
+        c.country_name AS country,
+        SUM(b.unique_block_clicks) AS total_unique_block_clicks
+      FROM
+        v_fact_sfmc_performance_block AS b
+        LEFT JOIN v_dim_sfmc_metadata_job AS m ON b.comp_key = m.comp_key
+        LEFT JOIN v_dim_country AS c ON b.business_unit = c.vc_country_code
+      WHERE
+        (
+          NOT m.email_name ILIKE '%sparkpost%'
+          OR m.email_name IS NULL
+        )
+      GROUP BY
+        c.country_name
+      ORDER BY
+        total_unique_block_clicks DESC
+    use_as_onboarding_question: false
+    verified_by: Li Ma
+    verified_at: 1769445485
+  - name: Show me unique block clicks by Link Type
+    question: Show me unique block clicks by Link Type
+    sql: |-
+      SELECT
+        a.linktype AS link_type,
+        SUM(b.unique_block_clicks) AS total_unique_block_clicks
+      FROM
+        v_fact_sfmc_performance_block AS b
+        LEFT JOIN v_dim_sfmc_alias AS a ON b.alias = a.alias
+        LEFT JOIN v_dim_sfmc_metadata_job AS m ON b.comp_key = m.comp_key
+      WHERE
+        (
+          NOT m.email_name ILIKE '%sparkpost%'
+          OR m.email_name IS NULL
+        )
+        AND NOT a.linktype IS NULL
+      GROUP BY
+        a.linktype
+      ORDER BY
+        total_unique_block_clicks DESC
+    use_as_onboarding_question: false
+    verified_by: Li Ma
+    verified_at: 1769445664
+  - name: Show me unique block clicks trend by month
+    question: Show me unique block clicks trend by month
+    sql: |-
+      SELECT
+        DATE_TRUNC('MONTH', b.min_eventdate) AS month,
+        SUM(b.unique_block_clicks) AS total_unique_block_clicks
+      FROM
+        v_fact_sfmc_performance_block AS b
+      LEFT JOIN v_dim_sfmc_metadata_job AS m ON b.comp_key = m.comp_key
+      WHERE
+        (
+          NOT m.email_name ILIKE '%sparkpost%'
+          OR m.email_name IS NULL
+        )
+      GROUP BY
+        DATE_TRUNC('MONTH', b.min_eventdate)
+      ORDER BY
+        month DESC
+    use_as_onboarding_question: false
+    verified_by: Li Ma
+    verified_at: 1769445882
+  - name: What is the total unique block click count across all campaigns?
+    question: What is the total unique block click count across all campaigns?
+    sql: |-
+      SELECT
+        SUM(b.unique_block_clicks) AS total_unique_block_clicks
+      FROM
+        v_fact_sfmc_performance_block AS b
+        LEFT JOIN v_dim_sfmc_metadata_job AS m ON b.comp_key = m.comp_key
+      WHERE
+        (
+          NOT m.email_name ILIKE '%sparkpost%'
+          OR m.email_name IS NULL
+        )
+        AND m.program_or_compaign = 'Campaign'
+    use_as_onboarding_question: false
+    verified_by: Li Ma
+    verified_at: 1769446324
+  - name: Compare unique block clicks percentage across different Link Tracking Aliases
+    question: Compare unique block clicks percentage across different Link Tracking Aliases
+    sql: |-
+      SELECT
+        a.linktrackingalias AS link_tracking_alias,
+        SUM(b.unique_block_clicks) AS total_unique_block_clicks,
+        ROUND(
+          SUM(b.unique_block_clicks) * 100.0 / NULLIF(
+            NULLIF(SUM(SUM(b.unique_block_clicks)) OVER (), 0),
+            0
+          ),
+          1
+        ) AS percentage
+      FROM
+        v_fact_sfmc_performance_block AS b
+      LEFT JOIN v_dim_sfmc_alias AS a ON b.alias = a.alias
+      LEFT JOIN v_dim_sfmc_metadata_job AS m ON b.comp_key = m.comp_key
+      WHERE
+        (
+          NOT m.email_name ILIKE '%sparkpost%'
+          OR m.email_name IS NULL
+        )
+        AND NOT a.linktrackingalias IS NULL
+      GROUP BY
+        a.linktrackingalias
+      ORDER BY
+        total_unique_block_clicks DESC
+    use_as_onboarding_question: false
+    verified_by: Li Ma
+    verified_at: 1769446301
+  - name: Show me Link Tracking Alias performance for Global eNewsletter in France
+    question: Show me Link Tracking Alias performance for Global eNewsletter in France
+    sql: |-
+      SELECT
+        a.linktrackingalias AS link_tracking_alias,
+        SUM(b.unique_block_clicks) AS total_unique_block_clicks
+      FROM
+        v_fact_sfmc_performance_block AS b
+      LEFT JOIN v_dim_sfmc_alias AS a ON b.alias = a.alias
+      LEFT JOIN v_dim_sfmc_metadata_job AS m ON b.comp_key = m.comp_key
+      LEFT JOIN v_dim_country AS c ON b.business_unit = c.vc_country_code
+      WHERE
+        (
+          NOT m.email_name ILIKE '%sparkpost%'
+          OR m.email_name IS NULL
+        )
+        AND NOT a.linktrackingalias IS NULL
+        AND m.program_or_compaign = 'E-newsletter'
+        AND c.vc_country_code = 'VCFR'
+      GROUP BY
+        a.linktrackingalias
+      ORDER BY
+        total_unique_block_clicks DESC
+    use_as_onboarding_question: false
+    verified_by: Li Ma
+    verified_at: 1769446390
 module_custom_instructions:
   sql_generation: |-
     module_custom_instructions:
