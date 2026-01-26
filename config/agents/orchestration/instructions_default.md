@@ -159,36 +159,154 @@ COLUMN DISTINCTION:
 - Always FILTER using email_name (full) for accuracy
 - OFFER to show full names if user wants more detail
 
-1. "CAMPAIGN" (as category)  Filter by program_or_compaign = 'Campaign'
+FUZZY MATCHING RULES FOR EMAIL_NAME:
+When searching for email/campaign names, account for variations in word separators:
+- Words may be connected by: hyphen (-), underscore (_), space ( ), or no separator
+- Example: "test drive" could appear as: "test-drive", "test_drive", "testdrive", "Test Drive"
+- Example: "EX30 Launch" could appear as: "EX30-Launch", "EX30_Launch", "EX30Launch", "EX30 Launch"
+
+SEARCH PATTERN FOR EMAIL_NAME:
+For any email/campaign keyword search, generate pattern that matches all separator variants:
+```sql
+-- For a keyword like "test drive", search for all variants
+WHERE (
+    email_name ILIKE '%test drive%'
+    OR email_name ILIKE '%test-drive%'
+    OR email_name ILIKE '%test_drive%'
+    OR email_name ILIKE '%testdrive%'
+    OR REPLACE(REPLACE(REPLACE(email_name, '-', ' '), '_', ' '), '  ', ' ') ILIKE '%test drive%'
+)
+```
+
+MULTI-WORD KEYWORD HANDLING:
+For keywords with multiple words, generate all separator combinations:
+- "spring sale" → '%spring sale%', '%spring-sale%', '%spring_sale%', '%springsale%'
+- "EX30 launch" → '%EX30 launch%', '%EX30-launch%', '%EX30_launch%', '%EX30launch%'
+
+1. "CAMPAIGN" (as category) → Filter by program_or_compaign = 'Campaign'
    - User says: "campaigns", "campaign performance", "show campaigns", "global campaign", "eDM campaigns"
    - These refer to the CATEGORY (fixed sends based on business objectives, e.g., new model launch)
-   - Apply filter: program_or_compaign = 'Campaign' to exclude Programs and Newsletters.
+   - Apply filter: program_or_compaign = 'Campaign' to exclude Programs and E-newsletters.
 
-2. "CAMPAIGN NAME" (specific name)  Filter by email_name
+2. "E-NEWSLETTER" (as category) → Filter by program_or_compaign = 'E-newsletter'
+   - User says: "global enewsletter", "newsletter performance", "e-newsletter", "newsletters", "enewsletters"
+   - These refer to the E-NEWSLETTER CATEGORY
+   - Apply filter: program_or_compaign = 'E-newsletter' to exclude Programs and Campaigns.
+
+3. "PROGRAM" (as category) → Filter by program_or_compaign = 'Program'
+   - User says: "programs", "program performance", "lifecycle programs"
+   - Apply filter: program_or_compaign = 'Program' to exclude Campaigns and E-newsletters.
+
+4. "CAMPAIGN NAME" (specific name) → Filter by email_name with fuzzy matching
    - User provides a specific name like "EX30 Spring Launch" or "Q4 Sustainability Campaign"
-   - Use: email_name ILIKE '%user_provided_name%' (filter on full name for accuracy)
+   - Use fuzzy matching with all separator variants on email_name
    - Display: email_name_cleansed (show short name for readability)
    - Do NOT filter by category unless user also says "campaigns only"
 
-3. CAMPAIGN KEYWORD SEARCH (ambiguous or partial match):
+5. CAMPAIGN KEYWORD SEARCH (ambiguous or partial match):
    - When user mentions a keyword that COULD be a campaign name (e.g., "EX30", "recharge", "sustainability"):
-   - FIRST: Run a preliminary query showing short names by default:
-     SELECT DISTINCT 
-         email_name_cleansed AS campaign_name,
-         email_name AS full_name
-     FROM V_DIM_SFMC_METADATA_JOB 
-     WHERE email_name ILIKE '%keyword%'
-     LIMIT 10;
+   - FIRST: Run a preliminary query showing short names by default with separator-agnostic search:
+```sql
+   SELECT DISTINCT 
+       email_name_cleansed AS campaign_name,
+       email_name AS full_name
+   FROM V_DIM_SFMC_METADATA_JOB 
+   WHERE email_name ILIKE '%keyword%'
+      OR email_name ILIKE '%key-word%'
+      OR email_name ILIKE '%key_word%'
+      OR email_name ILIKE '%keyword%'  -- no separator variant
+      OR REPLACE(REPLACE(REPLACE(email_name, '-', ' '), '_', ' '), '  ', ' ') ILIKE '%key word%'
+   LIMIT 10;
+```
    - DISPLAY: Show only the campaign_name (short) column initially
    - ASK: "I found X campaigns matching '{keyword}'. Would you like to see full names for more detail?"
    - IF USER SAYS YES: Show both columns
    - AFTER CONFIRMATION: Filter using email_name (full) value for accuracy
 
-4. DECISION LOGIC:
-   - "Show me campaign performance"  Filter: program_or_compaign = 'Campaign' (category)
-   - "Show me the EX30 campaign"  Fuzzy search on email_name, display short names, ask for confirmation
-   - "What's the click rate for EX30 Spring Launch?"  Filter: email_name ILIKE '%EX30 Spring Launch%'
-   - "Which campaigns mention sustainability?"  Fuzzy search, present short names, confirm, then query
+6. DECISION LOGIC:
+   - "Show me campaign performance" → Filter: program_or_compaign = 'Campaign' (category)
+   - "Show me global e-newsletter performance" → Filter: program_or_compaign = 'E-newsletter' (category)
+   - "Show me the EX30 campaign" → Fuzzy search on email_name with separator variants, display short names, ask for confirmation
+   - "What's the click rate for EX30 Spring Launch?" → Filter: email_name with all separator variants
+   - "Which campaigns mention sustainability?" → Fuzzy search with separator variants, present short names, confirm, then query
+
+---
+
+LTA (LINK TRACKING ALIAS) HANDLING (CRITICAL):
+
+COLUMN DISTINCTION:
+- link_tracking_alias: FULL name (detailed link identifier, may contain business unit, campaign info, version)
+- link_tracking_alias_cleansed: SHORT name (cleaned, readable) - use for DISPLAY
+- Always DISPLAY link_tracking_alias_cleansed (short) for readability
+- Always FILTER using link_tracking_alias (full) for accuracy
+- OFFER to show full names if user wants more detail
+
+FUZZY MATCHING RULES FOR LTA:
+When searching for LTA names, account for variations in word separators:
+- Words may be connected by: hyphen (-), underscore (_), space ( ), or no separator
+- Example: "test drive" could appear as: "test-drive", "test_drive", "testdrive", "Test Drive"
+- Example: "book appointment" could appear as: "book-appointment", "book_appointment", "bookappointment"
+
+SEARCH PATTERN FOR LTA:
+For any LTA keyword search, generate pattern that matches all separator variants:
+```sql
+-- For a keyword like "test drive", search for all variants
+WHERE (
+    link_tracking_alias ILIKE '%test drive%'
+    OR link_tracking_alias ILIKE '%test-drive%'
+    OR link_tracking_alias ILIKE '%test_drive%'
+    OR link_tracking_alias ILIKE '%testdrive%'
+    OR REPLACE(REPLACE(REPLACE(link_tracking_alias, '-', ' '), '_', ' '), '  ', ' ') ILIKE '%test drive%'
+)
+```
+
+LTA KEYWORD SEARCH WORKFLOW:
+1. WHEN USER MENTIONS AN LTA KEYWORD (e.g., "test drive", "book appointment", "brochure"):
+   - FIRST: Run a preliminary query showing short names by default:
+```sql
+   SELECT DISTINCT 
+       link_tracking_alias_cleansed AS link_name,
+       link_tracking_alias AS full_link_name
+   FROM V_DIM_SFMC_LINK_TRACKING  -- or appropriate table containing LTA data
+   WHERE link_tracking_alias ILIKE '%keyword%'
+      OR link_tracking_alias ILIKE '%key-word%'
+      OR link_tracking_alias ILIKE '%key_word%'
+      OR link_tracking_alias ILIKE '%keyword%'
+      OR REPLACE(REPLACE(REPLACE(link_tracking_alias, '-', ' '), '_', ' '), '  ', ' ') ILIKE '%key word%'
+   LIMIT 10;
+```
+
+2. DISPLAY: Show only the link_name (short) column initially
+
+3. ASK: "I found X link tracking aliases matching '{keyword}'. Would you like to see full names for more detail?"
+
+4. IF USER SAYS YES: Show both columns
+
+5. AFTER CONFIRMATION: Filter using link_tracking_alias (full) value for accuracy
+
+LTA DECISION LOGIC:
+- "Show me LTA performance" → Return all LTA metrics
+- "Show me the test drive links" → Fuzzy search on link_tracking_alias with separator variants, display short names, ask for confirmation
+- "What's the click rate for book-appointment?" → Filter: link_tracking_alias matching all separator variants
+- "Which LTAs mention brochure?" → Fuzzy search with separator variants, present short names, confirm, then query
+
+---
+
+PROGRAM_OR_COMPAIGN FILTER RULES (CRITICAL):
+
+CATEGORY FILTERS:
+| User Request | Filter Value |
+|--------------|--------------|
+| Global Campaign / Campaigns | program_or_compaign = 'Campaign' |
+| Global E-newsletter / Newsletter | program_or_compaign = 'E-newsletter' |
+| Programs / Lifecycle | program_or_compaign = 'Program' |
+
+EXAMPLES:
+- "Show me global campaign performance" → Filter: program_or_compaign = 'Campaign'
+- "What's the click rate for global e-newsletters?" → Filter: program_or_compaign = 'E-newsletter'
+- "How are programs performing this quarter?" → Filter: program_or_compaign = 'Program'
+- "Show me the EX30 campaign" → Fuzzy search on email_name (no category filter unless specified)
+- "Top performing global campaigns in Germany" → Filter: program_or_compaign = 'Campaign' AND country
 
 QUERY APPROACH:
 1. For YTD metrics: Filter from start of current year to today
