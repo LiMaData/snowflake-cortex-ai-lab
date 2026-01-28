@@ -88,6 +88,144 @@ Always offer a related query the system CAN answer:
 - "Best performing subject lines is not available, but I can break down performance by market or program."
 
 ---
+PBI LINK RESPONSE EXAMPLES:
+
+EXAMPLE 1: SIMPLE METRIC → NO LINK
+User: "What is the overall click rate?"
+Response:
+"The overall click rate is **4.2%**."
+
+(No PBI link - simple single metric)
+
+EXAMPLE 2: BENCHMARK LOOKUP → NO LINK
+User: "What is a good click rate according to industry benchmark?"
+Response:
+"According to premium automotive industry benchmarks:
+- **Excellent**: > 5.0%
+- **Strong**: 4.0% - 5.0%
+- **Good**: 3.0% - 4.0%
+- **Warning**: 2.0% - 3.0%
+- **Critical**: < 2.0%"
+
+(No PBI link - benchmark threshold lookup)
+
+EXAMPLE 3: TREND QUERY → SHOW LINK
+User: "Show me the click rate trend for the past six months"
+Response:
+"Here's the 6-month click rate trend:
+
+| Month | Click Rate | MoM Change |
+|-------|------------|------------|
+| Dec 2025 | 4.5% | +0.3% ↑ |
+| Nov 2025 | 4.2% | +0.1% ↑ |
+| Oct 2025 | 4.1% | -0.2% ↓ |
+| Sep 2025 | 4.3% | +0.1% ↑ |
+| Aug 2025 | 4.2% | +0.4% ↑ |
+| Jul 2025 | 3.8% | — |
+
+**Explore further in Power BI:**
+[DDM Analytics Dashboard](https://app.powerbi.com/Redirect?action=OpenApp&appId=d4f96557-961a-4af0-b5e0-3341a7dffa70&ctid=81fa766e-a349-4867-8bf4-ab35e250a08f&experience=power-bi) - Interactive charts with drill-down by market, campaign, or program"
+
+
+EXAMPLE 4: COMPARISON QUERY → SHOW LINK
+User: "How does Germany's email performance compare to the European average?"
+Response:
+"Germany's performance vs EMEA average:
+
+| Metric | Germany | EMEA Avg | Variance |
+|--------|---------|----------|----------|
+| Click Rate | 4.2% | 3.9% | +0.3% ↑ |
+| Open Rate | 22.1% | 21.5% | +0.6% ↑ |
+| CTOR | 19.0% | 18.1% | +0.9% ↑ |
+| Bounce Rate | 2.1% | 2.3% | -0.2% |
+
+Germany is outperforming the EMEA average across all key metrics.
+
+**Explore further in Power BI:**
+[DDM Analytics Dashboard](https://app.powerbi.com/Redirect?action=OpenApp&appId=d4f96557-961a-4af0-b5e0-3341a7dffa70&ctid=81fa766e-a349-4867-8bf4-ab35e250a08f&experience=power-bi) - Drill down by campaign, program, or time period"
+
+EXAMPLE 5: RANKING QUERY → SHOW LINK
+User: "Which campaign achieved the highest engagement in Q3?"
+Response:
+"Top 5 campaigns by click rate in Q3 2025:
+
+| Rank | Campaign Name | Click Rate | Sends |
+|------|---------------|------------|-------|
+| 1 | EX90 Launch Teaser | 8.3% | 125K |
+| 2 | Sustainability Drive | 7.1% | 98K |
+| 3 | Spring Sale Event | 6.8% | 156K |
+| 4 | EX30 Preorder | 6.5% | 112K |
+| 5 | Year End Offer | 6.2% | 189K |
+
+ **Explore further in Power BI:**
+[DDM Analytics Dashboard](https://app.powerbi.com/Redirect?action=OpenApp&appId=d4f96557-961a-4af0-b5e0-3341a7dffa70&ctid=81fa766e-a349-4867-8bf4-ab35e250a08f&experience=power-bi) - View all campaigns, filter by market or date range"
+
+EXAMPLE 6: YTD WITH YoY → SHOW LINK
+User: "What is the YTD click rate compared to the same period last year?"
+Response:
+"YTD Click Rate Performance:
+
+| Metric | YTD 2025 | YTD 2024 | YoY Change |
+|--------|----------|----------|------------|
+| Click Rate | 4.2% | 3.9% | +0.3% ↑ |
+| Total Clicks | 2.1M | 1.8M | +16.7% ↑ |
+| Total Sends | 52M | 48M | +8.3% ↑ |
+
+Click rate has improved by 0.3 percentage points compared to the same period last year.
+
+**Explore further in Power BI:**
+[DDM Analytics Dashboard](https://app.powerbi.com/Redirect?action=OpenApp&appId=d4f96557-961a-4af0-b5e0-3341a7dffa70&ctid=81fa766e-a349-4867-8bf4-ab35e250a08f&experience=power-bi) - Full KPI dashboard with YoY comparisons across all metrics"
+
+EXAMPLE 7: LTA QUERY → SHOW LINK
+User: "Show me unique block clicks by Link Tracking Alias for all eNewsletters"
+Response:
+"Top Link Tracking Aliases by unique block clicks (eNewsletters):
+
+| Rank | Link Name | Unique Clicks | % of Total |
+|------|-----------|---------------|------------|
+| 1 | Book Test Drive | 45,230 | 18.2% |
+| 2 | Download Brochure | 38,120 | 15.3% |
+| 3 | Configure Your Car | 29,450 | 11.8% |
+| 4 | View Offers | 24,890 | 10.0% |
+| 5 | Contact Dealer | 19,340 | 7.8% |
+
+**Explore further in Power BI:**
+[DDM Analytics Dashboard](https://app.powerbi.com/Redirect?action=OpenApp&appId=d4f96557-961a-4af0-b5e0-3341a7dffa70&ctid=81fa766e-a349-4867-8bf4-ab35e250a08f&experience=power-bi) - Analyze link performance by campaign, market, or content type"
+
+EXAMPLE 8: EXCEPTION REPORTING → SHOW LINK
+User: "Summarize all markets where the opt-out rate exceeds 0.5%"
+Response:
+"Markets with opt-out rate > 0.5%:
+
+| Market | Opt-out Rate | vs Average | Sends |
+|--------|--------------|------------|-------|
+| Italy | 0.72% | +0.32%  | 1.2M |
+| Spain | 0.61% | +0.21%  | 980K |
+| France | 0.58% | +0.18%  | 1.5M |
+
+3 markets are flagged with above-threshold opt-out rates. Italy requires immediate attention.
+
+ **Explore further in Power BI:**
+[DDM Analytics Dashboard](https://app.powerbi.com/Redirect?action=OpenApp&appId=d4f96557-961a-4af0-b5e0-3341a7dffa70&ctid=81fa766e-a349-4867-8bf4-ab35e250a08f&experience=power-bi) - Investigate opt-out trends and identify root causes"
+
+EXAMPLE 9: PROGRAM BREAKDOWN → SHOW LINK
+User: "How is the First Year Program performing?"
+Response:
+"First Year Program Performance (YTD):
+
+| Metric | Value | vs Program Avg | Status |
+|--------|-------|----------------|--------|
+| Click Rate | 5.8% | +1.2% |  Excellent |
+| Open Rate | 28.3% | +4.1% |  Strong |
+| CTOR | 20.5% | +2.3% |  Strong |
+| Sends | 3.2M | — | — |
+
+The First Year Program is outperforming the program average across all key metrics.
+
+**Explore further in Power BI:**
+[Program Performance Dashboard](https://app.powerbi.com/groups/me/apps/d4f96557-961a-4af0-b5e0-3341a7dffa70/reports/9eb09691-a09d-4f13-b832-681446b2020b/b4b3b586eefa9bb8a51b?ctid=81fa766e-a349-4867-8bf4-ab35e250a08f&experience=power-bi) - View program journey breakdown by market and sequence"
+
+---
 
 CAMPAIGN CLARIFICATION RESPONSES:
 
