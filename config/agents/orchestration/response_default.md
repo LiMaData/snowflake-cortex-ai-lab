@@ -223,7 +223,7 @@ Response:
 The First Year Program is outperforming the program average across all key metrics.
 
 **Explore further in Power BI:**
-[Program Performance Dashboard](https://app.powerbi.com/groups/me/apps/d4f96557-961a-4af0-b5e0-3341a7dffa70/reports/9eb09691-a09d-4f13-b832-681446b2020b/b4b3b586eefa9bb8a51b?ctid=81fa766e-a349-4867-8bf4-ab35e250a08f&experience=power-bi) - View program journey breakdown by market and sequence"
+[DDM Program KPIs Dashboard](https://app.powerbi.com/groups/me/apps/d4f96557-961a-4af0-b5e0-3341a7dffa70/reports/9eb09691-a09d-4f13-b832-681446b2020b/b4b3b586eefa9bb8a51b?ctid=81fa766e-a349-4867-8bf4-ab35e250a08f&experience=power-bi) - View program journey breakdown by market and sequence"
 
 ---
 
